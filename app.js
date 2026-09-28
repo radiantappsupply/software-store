@@ -69,6 +69,12 @@
   }
 
   function thumbHtml(p, cls) {
+    cls = cls || "thumb";
+    if (p.cover) {
+      return '<img class="' + cls + ' cover" src="' + esc(p.cover) +
+        '" alt="" loading="lazy" onerror="this.outerHTML=' +
+        "'<span class=\"" + cls + " fallback\">💿</span>'" + '">';
+    }
     if (p.i) {
       return '<img class="' + (cls || "thumb") + '" src="' + esc(p.i) +
         '" alt="" loading="lazy" onerror="this.outerHTML=' +
