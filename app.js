@@ -68,10 +68,20 @@
     });
   }
 
+  function thumbHtml(p, cls) {
+    if (p.i) {
+      return '<img class="' + (cls || "thumb") + '" src="' + esc(p.i) +
+        '" alt="" loading="lazy" onerror="this.outerHTML=' +
+        "'<span class=\"" + (cls || "thumb") + " fallback\">💿</span>'" + '">';
+    }
+    return '<span class="' + (cls || "thumb") + ' fallback">💿</span>';
+  }
+
   function cardHtml(p) {
     var buyUrl = "https://t.me/" + BOT_USERNAME + "?start=buy_" + p.id;
     return '<div class="card">' +
-      '<h3><a href="#/p/' + p.id + '">' + esc(p.n) + "</a></h3>" +
+      '<div class="chead">' + thumbHtml(p) +
+      '<h3><a href="#/p/' + p.id + '">' + esc(p.n) + "</a></h3></div>" +
       '<div class="cmeta">' + mm(p.c) + " ဖိုင် · " + esc(fmtSize(p.s)) + "</div>" +
       '<div class="crow"><span class="price">' + mm(PRICE_MMK) + " ကျပ်</span>" +
       '<a class="buy" href="' + buyUrl + '" target="_blank" rel="noopener">ဝယ်မယ်</a></div>' +
@@ -111,9 +121,19 @@
           return "<li><span>" + esc(f.n) + '</span><span class="fs">' +
             esc(fmtSize(f.s)) + "</span></li>";
         }).join("");
+        var icon = "";
+        if (DATA) {
+          for (var i = 0; i < DATA.products.length; i++) {
+            if (DATA.products[i].id === pid) {
+              icon = thumbHtml(DATA.products[i], "thumb big");
+              break;
+            }
+          }
+        }
         view.innerHTML =
           '<a class="back" href="#/">← ပြန်သွားရန်</a>' +
-          '<div class="detail"><h2>' + esc(d.name) + "</h2>" +
+          '<div class="detail"><div class="chead">' + icon +
+          "<h2>" + esc(d.name) + "</h2></div>" +
           '<div class="dbox">' + mm(d.count) + " ဖိုင် · စုစုပေါင်း <b>" +
           esc(fmtSize(d.size)) + "</b></div>" +
           '<ul class="flist">' + rows + "</ul>" +

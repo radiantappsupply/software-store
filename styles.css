@@ -87,6 +87,16 @@ a { color: inherit; text-decoration: none; }
   border-radius: var(--radius); padding: 12px;
   display: flex; flex-direction: column; gap: 6px;
 }
+.chead { display: flex; gap: 10px; align-items: flex-start; }
+.chead h3 { flex: 1; min-width: 0; }
+.thumb {
+  width: 46px; height: 46px; border-radius: 11px; flex: 0 0 46px;
+  background: var(--bg2); object-fit: contain;
+}
+.thumb.fallback {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 25px; border: 1px solid var(--line); object-fit: fill;
+}
 .card h3 { margin: 0; font-size: 15px; line-height: 1.4; }
 .card h3 a:hover { color: var(--acc); }
 .cmeta { color: var(--muted); font-size: 13px; }
@@ -108,7 +118,9 @@ a { color: inherit; text-decoration: none; }
 .back { color: var(--muted); font-size: 14px; display: inline-block; margin-bottom: 8px; }
 .detail { background: var(--card); border: 1px solid var(--line);
   border-radius: var(--radius); padding: 16px; }
-.detail h2 { margin: 0 0 6px; font-size: 18px; }
+.detail h2 { margin: 0; font-size: 18px; flex: 1; min-width: 0; }
+.thumb.big { width: 56px; height: 56px; flex-basis: 56px; }
+.detail .chead { margin-bottom: 8px; align-items: center; }
 .dbox { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
 .dbox b { color: var(--text); }
 .flist { list-style: none; margin: 0 0 16px; padding: 0; }
