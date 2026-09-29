@@ -100,6 +100,12 @@ a { color: inherit; text-decoration: none; }
 .vers-t { font-weight: 700; margin-bottom: 6px; font-size: 14px; color: #b8c0cc; }
 .vers a { display: block; padding: 8px 10px; background: #141a24; border-radius: 8px;
   margin-bottom: 6px; color: #e8ecf1; text-decoration: none; font-size: 14px; }
+.req { margin: 14px 0; background: #141a24; border-radius: 10px; padding: 12px; }
+.req-t { font-weight: 700; margin-bottom: 8px; font-size: 14px; }
+.req-r { display: flex; gap: 10px; font-size: 14px; padding: 4px 0;
+  border-top: 1px solid #232c3b; }
+.req-r:first-of-type { border-top: none; }
+.req-r span { min-width: 44px; font-weight: 700; color: #8fa3bf; }
 .buy.free { background: #1d7a3a; }
 .buy.big.free { background: #1d7a3a; }
   display: flex; align-items: center; justify-content: center;

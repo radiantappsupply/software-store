@@ -163,6 +163,20 @@
               return '<a href="#/p/' + v.id + '">' + esc(v.n) + "</a>";
             }).join("") + "</div>";
         }
+        var req = "";
+        if (d.req) {
+          var RL = [["os", "OS"], ["cpu", "CPU"], ["ram", "RAM"],
+                    ["disk", "Disk"], ["gpu", "GPU"]];
+          var rows2 = RL.filter(function (r) { return d.req[r[0]]; })
+            .map(function (r) {
+              return '<div class="req-r"><span>' + r[1] + "</span>" +
+                esc(d.req[r[0]]) + "</div>";
+            }).join("");
+          if (rows2) {
+            req = '<div class="req"><div class="req-t">💻 စနစ်လိုအပ်ချက် ' +
+              "(အနည်းဆုံး)</div>" + rows2 + "</div>";
+          }
+        }
         view.innerHTML =
           '<a class="back" href="#/">← ပြန်သွားရန်</a>' +
           '<div class="detail"><div class="chead">' + icon +
@@ -170,6 +184,7 @@
           (desc ? '<p class="desc">' + esc(desc) + "</p>" : "") +
           '<div class="dbox">' + mm(d.count) + " ဖိုင် · စုစုပေါင်း <b>" +
           esc(fmtSize(d.size)) + "</b></div>" +
+          req +
           '<ul class="flist">' + rows + "</ul>" +
           vers +
           (d.free
