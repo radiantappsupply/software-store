@@ -62,6 +62,7 @@
     var toks = q.split(/\s+/).filter(Boolean);
     var list = DATA.products.filter(function (p) {
       if (state.cat !== "all" && catOf(p.n) !== state.cat) return false;
+      if (state.cat === "all" && !toks.length && !p.latest) return false;
       if (!toks.length) return true;
       var hay = p.n.toLowerCase();
       return toks.every(function (t) { return hay.indexOf(t) !== -1; });
@@ -143,6 +144,13 @@
             }
           }
         }
+        var vers = "";
+        if (d.vers && d.vers.length) {
+          vers = '<div class="vers"><div class="vers-t">အခြား version များ</div>' +
+            d.vers.map(function (v) {
+              return '<a href="#/p/' + v.id + '">' + esc(v.n) + "</a>";
+            }).join("") + "</div>";
+        }
         view.innerHTML =
           '<a class="back" href="#/">← ပြန်သွားရန်</a>' +
           '<div class="detail"><div class="chead">' + icon +
@@ -151,6 +159,7 @@
           '<div class="dbox">' + mm(d.count) + " ဖိုင် · စုစုပေါင်း <b>" +
           esc(fmtSize(d.size)) + "</b></div>" +
           '<ul class="flist">' + rows + "</ul>" +
+          vers +
           '<div class="buyrow"><span class="price" style="font-size:18px">' +
           mm(d.price) + ' ကျပ်</span>' +
           '<a class="buy big" href="' + esc(d.buy_url) +
