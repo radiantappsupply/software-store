@@ -103,7 +103,7 @@
     var btn = p.free
       ? '<a class="buy free" href="' + linkUrl + '" target="_blank" rel="noopener">🆓 အခမဲ့ရယူမယ်</a>'
       : '<a class="buy" href="' + linkUrl + '" target="_blank" rel="noopener">ဝယ်မယ်</a>';
-    var price = p.free ? "အခမဲ့" : mm(PRICE_MMK) + " ကျပ်";
+    var price = p.free ? "အခမဲ့" : mm(p.p || PRICE_MMK) + " ကျပ်";
     return '<div class="card">' +
       '<div class="chead">' + thumbHtml(p) +
       '<h3><a href="#/p/' + p.id + '">' + esc(p.n) + "</a></h3></div>" +
