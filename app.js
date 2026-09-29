@@ -60,12 +60,18 @@
   function filtered() {
     var q = state.q.trim().toLowerCase();
     var toks = q.split(/\s+/).filter(Boolean);
-    return DATA.products.filter(function (p) {
+    var list = DATA.products.filter(function (p) {
       if (state.cat !== "all" && catOf(p.n) !== state.cat) return false;
       if (!toks.length) return true;
       var hay = p.n.toLowerCase();
       return toks.every(function (t) { return hay.indexOf(t) !== -1; });
     });
+    if (state.cat === "all") {
+      list.sort(function (a, b) {
+        return (b.pop - a.pop) || (b.s - a.s);
+      });
+    }
+    return list;
   }
 
   function thumbHtml(p, cls) {
