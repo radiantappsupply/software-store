@@ -18,6 +18,7 @@
 
   var CATS = [
     ["all", "အားလုံး", null],
+    ["free", "အခမဲ့", "FREE"],
     ["win", "Windows / Office", ["windows", "office", "kms", "activator", "winrar"]],
     ["adobe", "Adobe", ["adobe"]],
     ["va", "Video & Audio", ["video", "audio", "music", "filmora", "camtasia", "obs", "fl studio", "ableton"]],
@@ -27,7 +28,7 @@
   ];
   function catOf(name) {
     var n = (name || "").toLowerCase();
-    for (var i = 1; i < CATS.length - 1; i++) {
+    for (var i = 2; i < CATS.length - 1; i++) {
       var kws = CATS[i][2];
       for (var j = 0; j < kws.length; j++) {
         if (n.indexOf(kws[j]) !== -1) return CATS[i][0];
@@ -61,13 +62,19 @@
     var q = state.q.trim().toLowerCase();
     var toks = q.split(/\s+/).filter(Boolean);
     var list = DATA.products.filter(function (p) {
-      if (state.cat !== "all" && catOf(p.n) !== state.cat) return false;
+      if (state.cat === "free") {
+        if (!p.free) return false;
+      } else {
+        if (p.free) return false;
+        if (state.cat !== "all" && catOf(p.n) !== state.cat) return false;
+      }
       if (state.cat === "all" && !toks.length && !p.latest) return false;
+      if (state.cat === "free" && !toks.length && !p.frep) return false;
       if (!toks.length) return true;
       var hay = p.n.toLowerCase();
       return toks.every(function (t) { return hay.indexOf(t) !== -1; });
     });
-    if (state.cat === "all") {
+    if (state.cat === "all" || state.cat === "free") {
       list.sort(function (a, b) {
         return (b.pop - a.pop) || (b.s - a.s);
       });
@@ -91,13 +98,18 @@
   }
 
   function cardHtml(p) {
-    var buyUrl = "https://t.me/" + BOT_USERNAME + "?start=buy_" + p.id;
+    var linkUrl = "https://t.me/" + BOT_USERNAME + "?start=" +
+      (p.free ? "free_" : "buy_") + p.id;
+    var btn = p.free
+      ? '<a class="buy free" href="' + linkUrl + '" target="_blank" rel="noopener">🆓 အခမဲ့ရယူမယ်</a>'
+      : '<a class="buy" href="' + linkUrl + '" target="_blank" rel="noopener">ဝယ်မယ်</a>';
+    var price = p.free ? "အခမဲ့" : mm(PRICE_MMK) + " ကျပ်";
     return '<div class="card">' +
       '<div class="chead">' + thumbHtml(p) +
       '<h3><a href="#/p/' + p.id + '">' + esc(p.n) + "</a></h3></div>" +
       '<div class="cmeta">' + mm(p.c) + " ဖိုင် · " + esc(fmtSize(p.s)) + "</div>" +
-      '<div class="crow"><span class="price">' + mm(PRICE_MMK) + " ကျပ်</span>" +
-      '<a class="buy" href="' + buyUrl + '" target="_blank" rel="noopener">ဝယ်မယ်</a></div>' +
+      '<div class="crow"><span class="price">' + price + "</span>" +
+      btn + "</div>" +
       "</div>";
   }
 
@@ -160,10 +172,14 @@
           esc(fmtSize(d.size)) + "</b></div>" +
           '<ul class="flist">' + rows + "</ul>" +
           vers +
-          '<div class="buyrow"><span class="price" style="font-size:18px">' +
-          mm(d.price) + ' ကျပ်</span>' +
-          '<a class="buy big" href="' + esc(d.buy_url) +
-          '" target="_blank" rel="noopener">ဝယ်မယ် 🛒</a></div>' +
+          (d.free
+            ? '<div class="buyrow"><span class="price" style="font-size:18px">အခမဲ့</span>' +
+              '<a class="buy big free" href="https://t.me/' + BOT_USERNAME + "?start=free_" + d.id +
+              '" target="_blank" rel="noopener">🆓 အခမဲ့ ဒေါင်းလုဒ်ဆွဲမယ်</a></div>'
+            : '<div class="buyrow"><span class="price" style="font-size:18px">' +
+              mm(d.price) + ' ကျပ်</span>' +
+              '<a class="buy big" href="' + esc(d.buy_url) +
+              '" target="_blank" rel="noopener">ဝယ်မယ် 🛒</a></div>') +
           '<div class="note">ဝယ်ယူရန် နှိပ်လိုက်တာနဲ့ Telegram bot ဆီ ရောက်သွားမှာပါ။ ' +
           "ငွေလွှဲပြေစာပို့ပြီး ဖိုင်တွေ ရယူနိုင်ပါတယ်။</div></div>";
         window.scrollTo(0, 0);
