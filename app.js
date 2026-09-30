@@ -104,9 +104,11 @@
       ? '<a class="buy free" href="' + linkUrl + '" target="_blank" rel="noopener">🆓 အခမဲ့ရယူမယ်</a>'
       : '<a class="buy" href="' + linkUrl + '" target="_blank" rel="noopener">ဝယ်မယ်</a>';
     var price = p.free ? "အခမဲ့" : mm(p.p || PRICE_MMK) + " ကျပ်";
-    return '<div class="card">' +
+    var teaser = p.d ? '<div class="teaser">' + esc(p.d) + "</div>" : "";
+    return '<div class="card" data-pid="' + p.id + '">' +
       '<div class="chead">' + thumbHtml(p) +
-      '<h3><a href="#/p/' + p.id + '">' + esc(p.n) + "</a></h3></div>" +
+      "<h3>" + esc(p.n) + '</h3><span class="chev">›</span></div>' +
+      teaser +
       '<div class="cmeta">' + mm(p.c) + " ဖိုင် · " + esc(fmtSize(p.s)) + "</div>" +
       '<div class="crow"><span class="price">' + price + "</span>" +
       btn + "</div>" +
@@ -129,6 +131,13 @@
       }
     }
     view.innerHTML = html;
+    view.onclick = function (e) {
+      if (e.target.closest(".buy")) return; // Buy button -> Telegram, not detail
+      var card = e.target.closest(".card");
+      if (card && card.getAttribute("data-pid")) {
+        location.hash = "#/p/" + card.getAttribute("data-pid");
+      }
+    };
     var more = document.getElementById("moreBtn");
     if (more) more.onclick = function () {
       state.shown = Math.min(state.shown + PAGE, list.length);
