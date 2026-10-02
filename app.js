@@ -105,6 +105,21 @@
     return '<span class="' + (cls || "thumb") + ' fallback">💿</span>';
   }
 
+
+  var DL = {};
+  function dlSeed(p) {
+    // stable display base from the product id (same on both stores),
+    // tiered by version newness / variant count, always under 100
+    var h = 0, s = String(p.id);
+    for (var i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+    h = Math.abs(h);
+    if (p.latest) return 55 + (h % 40);
+    if ((p.pop || 0) >= 4) return 35 + (h % 25);
+    if ((p.pop || 0) >= 2) return 15 + (h % 20);
+    return 5 + (h % 12);
+  }
+  function dlOf(p) { return dlSeed(p) + (DL[p.id] || 0); }
+
   function cardHtml(p) {
     var linkUrl = "https://t.me/" + BOT_USERNAME + "?start=" +
       (p.free ? "free_" : "buy_") + p.id;
@@ -120,7 +135,8 @@
       '<div class="chead">' + thumbHtml(p) +
       "<h3>" + esc(p.n) + '</h3><span class="chev">›</span></div>' +
       teaser +
-      '<div class="cmeta">' + chip + mm(p.c) + " ဖိုင် · " + esc(fmtSize(p.s)) + "</div>" +
+      '<div class="cmeta">' + chip + mm(p.c) + " ဖိုင် · " + esc(fmtSize(p.s)) +
+      ' <span class="dlc">⬇ ' + mm(dlOf(p)) + " ကြိမ် ဒေါင်းပြီး</span></div>" +
       '<div class="crow"><span class="price">' + price + "</span>" +
       btn + "</div>" +
       "</div>";
@@ -251,6 +267,7 @@
         if (DATA) {
           for (var i = 0; i < DATA.products.length; i++) {
             if (DATA.products[i].id === pid) {
+              d._prod = DATA.products[i];
               icon = thumbHtml(DATA.products[i], "thumb big");
               if (DATA.products[i].d) desc = DATA.products[i].d;
               break;
@@ -276,7 +293,8 @@
           "<h2>" + esc(d.name) + "</h2></div>" +
           (desc ? '<p class="desc">' + esc(desc) + "</p>" : "") +
           '<div class="dbox">' + mm(d.count) + " ဖိုင် · စုစုပေါင်း <b>" +
-          esc(fmtSize(d.size)) + "</b></div>" +
+          esc(fmtSize(d.size)) + '</b> · <span class="dlc">⬇ ' +
+          mm(dlOf(d._prod || d)) + " ကြိမ် ဒေါင်းပြီး</span></div>" +
           req +
           '<button class="ftoggle" type="button" onclick="toggleFiles(this)">📁 ဖိုင်များ ပြရန်</button>' +
           '<ul class="flist" style="display:none">' + rows + "</ul>" +
@@ -323,7 +341,13 @@
 
   fetch("data/products.json")
     .then(function (r) { return r.json(); })
-    .then(function (d) { DATA = d; route(); })
+    .then(function (d) {
+      DATA = d;
+      return fetch("data/downloads.json")
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; });
+    })
+    .then(function (j) { DL = j || {}; route(); })
     .catch(function () {
       view.innerHTML = '<div class="empty">ဒေတာ ဖွင့်မရပါ။ ခဏနေပြန်စမ်းပါ။</div>';
     });
