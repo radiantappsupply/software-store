@@ -144,6 +144,13 @@
     view.scrollIntoView();
   }
 
+  window.toggleFiles = function (btn) {
+    var u = btn.nextElementSibling;
+    var show = u.style.display === "none";
+    u.style.display = show ? "" : "none";
+    btn.textContent = show ? "📁 ဖိုင်များ ဝှက်ရန်" : "📁 ဖိုင်များ ပြရန်";
+  };
+
   function renderDetail(pid) {
     view.innerHTML = '<div class="count">ဖွင့်နေပါသည်…</div>';
     fetch("data/products/" + pid + ".json")
@@ -184,7 +191,8 @@
           '<div class="dbox">' + mm(d.count) + " ဖိုင် · စုစုပေါင်း <b>" +
           esc(fmtSize(d.size)) + "</b></div>" +
           req +
-          '<ul class="flist">' + rows + "</ul>" +
+          '<button class="ftoggle" type="button" onclick="toggleFiles(this)">📁 ဖိုင်များ ပြရန်</button>' +
+          '<ul class="flist" style="display:none">' + rows + "</ul>" +
           vers +
           (d.free
             ? '<div class="buyrow"><span class="price" style="font-size:18px">အခမဲ့</span>' +
